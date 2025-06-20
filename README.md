@@ -1,11 +1,11 @@
-# 🐘 ElephanTalk - Real Time Chat Integration
+# 🐘 ElephanTalk - Chat Grupal en Tiempo Real
 
 Este repositorio contiene una implementación completa y consolidada de un chat grupal en tiempo real, que integra:
 
-👉 **Frontend** en React con Vite
-👉 **Backend** con Socket.IO, JWT y persistencia de mensajes
-👉 **Servicio de Moderación** con FastAPI usando el modelo Detoxify
-👉 Documentación unificada y pruebas para cada componente
+📅 **Frontend** en React con Vite
+🚀 **Backend** con Socket.IO, JWT y persistencia de mensajes
+🔗 **Servicio de Moderación** con FastAPI usando el modelo Detoxify
+📃 Documentación unificada y pruebas para cada componente
 
 ---
 
@@ -13,8 +13,8 @@ Este repositorio contiene una implementación completa y consolidada de un chat 
 
 * **Node.js** v20 o superior
 * **Python** 3.10 o superior
-* **Docker** (opcional para la moderación)
-* **torch** para el servicio de moderación con Detoxify
+* **Docker** (opcional para el servicio de moderación)
+* **torch** para el servicio Detoxify (modelo AI)
 
 ---
 
@@ -28,8 +28,9 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
-📌 El servicio usa el modelo Detoxify Multilingual y se conecta por defecto en `http://localhost:8000`.
-📌 La primera ejecución descargará los pesos del modelo; se necesita conexión a internet.
+📌 Este servicio analiza mensajes con Detoxify Multilingual.
+
+📅 Primer uso descarga pesos del modelo; requiere conexión a internet.
 
 #### Alternativa con Docker:
 
@@ -37,8 +38,6 @@ uvicorn main:app --reload
 docker build -t moderation-service .
 docker run -p 8000:8000 moderation-service
 ```
-
----
 
 ### 2. Servidor de Chat (Node.js + Socket.IO)
 
@@ -50,10 +49,9 @@ cp .env.example .env
 npm start
 ```
 
-📌 El servidor escucha en el puerto especificado en `.env` (por defecto `4000`).
-📌 Los mensajes se guardan localmente en `messages.json`.
+🔹 El servidor escucha por defecto en el puerto `4000`.
 
----
+🔹 Los mensajes se guardan en `messages.json`.
 
 ### 3. Frontend (React + Vite)
 
@@ -65,50 +63,51 @@ cp .env.example .env
 npm run dev
 ```
 
-📌 Abre `http://localhost:5173/chat`
-📌 El usuario debe tener un token JWT válido almacenado en `localStorage`.
+🔹 Accede al chat en `http://localhost:5173/chat`
+
+🔹 Se requiere JWT en `localStorage` para funcionar.
 
 ---
 
 ## ✅ Pruebas
 
-### Backend (Servidor de Chat)
+### ChatServer (Node.js)
 
 ```bash
 cd Backend/ChatServer
 npm test
 ```
 
-### Servicio de Moderación
+### Moderation (FastAPI)
 
 ```bash
 cd Backend/MicroserviceModeration
 pytest -q
 ```
 
-📌 Asegúrate de tener instaladas las dependencias necesarias:
+Requiere:
 
 ```bash
-pip install fastapi pydantic uvicorn httpx torch
+pip install fastapi pydantic uvicorn httpx torch detoxify
 ```
 
 ---
 
 ## 🐳 Docker Compose (opcional)
 
-Este repositorio incluye `Dockerfile` para cada servicio principal. Puedes crear un `docker-compose.yml` si deseas orquestar todo el entorno con un solo comando.
+Puedes crear un archivo `docker-compose.yml` si deseas ejecutar todos los servicios con un solo comando.
 
 ---
 
 ## 💬 Flujo del Chat
 
-1. El usuario inicia sesión en la aplicación y obtiene un token JWT.
-2. El frontend se conecta vía Socket.IO al servidor de chat.
+1. El usuario inicia sesión y obtiene un token JWT.
+2. El frontend se conecta al backend con Socket.IO.
 3. Al enviar un mensaje:
 
    * El backend lo reenvía al servicio de moderación.
-   * Si es aceptado, se difunde a todos los clientes.
-   * Si es rechazado, se notifica al remitente con la razón.
+   * Si se acepta, se difunde a todos los usuarios conectados.
+   * Si se rechaza, se informa la razón al emisor.
 
 ---
 
@@ -116,22 +115,20 @@ Este repositorio incluye `Dockerfile` para cada servicio principal. Puedes crear
 
 ```
 Proyecto-ACA/
-│
 ├── Backend/
-│   ├── ChatServer/              → Socket.IO server con JWT y persistencia
-│   └── MicroserviceModeration/ → Servicio FastAPI con Detoxify
-│
-├── Frontend/                   → Aplicación React con chat integrado
-├── README.md                   → Este documento
-└── CHAT_AUDIT.md               → Bitácora técnica de la integración del chat
+│   ├── ChatServer/              → Socket.IO + JWT + persistencia
+│   └── MicroserviceModeration/ → FastAPI + Detoxify
+├── Frontend/                   → React + Vite + JWT
+├── README.md                   → Documentación global
+└── CHAT_AUDIT.md               → Registro de cambios e integraciones
 ```
 
 ---
 
-## 📅 Notas Finales
+## 📆 Notas Finales
 
-* Puedes personalizar los umbrales de toxicidad en `Backend/MicroserviceModeration/main.py`.
-* La arquitectura está diseñada para escalar y permite reemplazar Detoxify por otro modelo si es necesario.
-* Asegura el despliegue en producción con HTTPS, variables de entorno y tokens JWT fuertes.
+* El umbral de toxicidad se puede personalizar en `main.py`
+* Arquitectura preparada para escalar o cambiar de modelo de moderación
+* Se recomienda uso de HTTPS y protección JWT en producción
 
 ---
