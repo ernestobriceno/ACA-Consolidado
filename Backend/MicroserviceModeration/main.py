@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from schemas.message import Message
 from DetoxifyMultilingual import DetoxifyMultilingual
 
-# load detoxify model once at startup
+# Cargar modelo Detoxify multilingüe al inicio
 model = DetoxifyMultilingual()
 
 THRESHOLD = 0.5
@@ -24,4 +24,5 @@ async def moderate(message: Message):
     return {
         'accepted': not toxic,
         'reason': 'toxic content' if toxic else None,
+        'scores': scores,
     }

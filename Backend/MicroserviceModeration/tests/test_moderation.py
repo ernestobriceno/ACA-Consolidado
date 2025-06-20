@@ -3,17 +3,17 @@ from main import app
 
 client = TestClient(app)
 
-
 def test_moderate_accept():
-    resp = client.post('/moderate', json={'content': 'hello friend'})
-    assert resp.status_code == 200
-    data = resp.json()
+    response = client.post('/moderate', json={'content': 'hello friend'})
+    assert response.status_code == 200
+    data = response.json()
     assert data['accepted'] is True
-
+    assert 'scores' in data
 
 def test_moderate_reject():
-    resp = client.post('/moderate', json={'content': 'I will kill you'})
-    assert resp.status_code == 200
-    data = resp.json()
+    response = client.post('/moderate', json={'content': 'I will kill you'})
+    assert response.status_code == 200
+    data = response.json()
     assert data['accepted'] is False
-    assert data['reason']
+    assert data['reason'] == 'toxic content'
+    assert 'scores' in data
