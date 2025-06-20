@@ -19,6 +19,7 @@ uvicorn main:app --reload
 The service loads the multilingual Detoxify model using PyTorch. The first run
 will download the weights so an internet connection is required and startup may
 take a while. The API will be available on `http://localhost:8000`.
+Ensure pip can reach pypi.org to install heavy dependencies like torch and detoxify.
 
 To run it with Docker instead:
 ```bash
