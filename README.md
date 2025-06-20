@@ -1,62 +1,134 @@
-# ElephanTalk - Real Time Chat Prototype
+# 🐘 ElephanTalk - Chat Grupal en Tiempo Real
 
-This repository contains a minimal chat application that integrates a Node.js Socket.IO server, a React frontend and a Python FastAPI service for message moderation using Detoxify.
+Este repositorio contiene una implementación completa y consolidada de un chat grupal en tiempo real, que integra:
 
-## Requirements
-- **Node.js 20+** for the frontend and chat server
-- **Python 3.10+** for the moderation service
-- **Docker** *(optional)* if you prefer containerised execution
+📅 **Frontend** en React con Vite
+🚀 **Backend** con Socket.IO, JWT y persistencia de mensajes
+🔗 **Servicio de Moderación** con FastAPI usando el modelo Detoxify
+📃 Documentación unificada y pruebas para cada componente
 
-## Setup
-Follow these steps to run each service locally. Copy the provided `.env.example` files and adjust the variables as needed.
+---
 
-### 1. Moderation Service
+## 📦 Requisitos
+
+* **Node.js** v20 o superior
+* **Python** 3.10 o superior
+* **Docker** (opcional para el servicio de moderación)
+* **torch** para el servicio Detoxify (modelo AI)
+
+---
+
+## ✨ Configuración
+
+### 1. Servicio de Moderación (FastAPI + Detoxify)
+
 ```bash
 cd Backend/MicroserviceModeration
 pip install -r requirements.txt
 uvicorn main:app --reload
 ```
-The service loads the multilingual Detoxify model using PyTorch. The first run
-will download the weights so an internet connection is required and startup may
-take a while. The API will be available on `http://localhost:8000`.
-Ensure pip can reach pypi.org to install heavy dependencies like torch and detoxify.
 
-To run it with Docker instead:
+📌 Este servicio analiza mensajes con Detoxify Multilingual.
+
+📅 Primer uso descarga pesos del modelo; requiere conexión a internet.
+
+#### Alternativa con Docker:
+
 ```bash
 docker build -t moderation-service .
 docker run -p 8000:8000 moderation-service
 ```
 
-### 2. Chat Server
+### 2. Servidor de Chat (Node.js + Socket.IO)
+
 ```bash
 cd Backend/ChatServer
 npm install
 cp .env.example .env
-# set JWT_SECRET and MODERATION_URL if different
+# Configura JWT_SECRET y MODERATION_URL si es necesario
 npm start
 ```
-The server listens on the port defined in `.env` (default `4000`). Messages are stored in `messages.json`.
 
-### 3. Frontend
+🔹 El servidor escucha por defecto en el puerto `4000`.
+
+🔹 Los mensajes se guardan en `messages.json`.
+
+### 3. Frontend (React + Vite)
+
 ```bash
-cd Frontent
+cd Frontend
 npm install
 cp .env.example .env
-# set VITE_CHAT_URL to the chat server URL
+# Define VITE_CHAT_URL con la URL del servidor de chat (ej. http://localhost:4000)
 npm run dev
 ```
-After starting, open `http://localhost:5173/chat` (or the Vite dev server port) to use the chat. The user must be authenticated in the main app so a JWT token is available in `localStorage`.
 
-## Testing
-Execute the automated tests for each backend service:
-```bash
-cd Backend/ChatServer && npm test
-cd ../MicroserviceModeration && pytest -q
-```
-Running the moderation tests requires the Detoxify model and its dependencies (e.g. `torch`). The first execution may be slow while the weights download.
+🔹 Accede al chat en `http://localhost:5173/chat`
 
-## Using Docker Compose
-The repository includes individual Dockerfiles but no compose file. You can build and run the moderation and API images separately using the commands shown above or adapt them to your own `docker-compose.yml`.
+🔹 Se requiere JWT en `localStorage` para funcionar.
 
 ---
-With all services running you can send and receive messages in real time. Content is checked by the moderation service before being broadcast to all connected clients.
+
+## ✅ Pruebas
+
+### ChatServer (Node.js)
+
+```bash
+cd Backend/ChatServer
+npm test
+```
+
+### Moderation (FastAPI)
+
+```bash
+cd Backend/MicroserviceModeration
+pytest -q
+```
+
+Requiere:
+
+```bash
+pip install fastapi pydantic uvicorn httpx torch detoxify
+```
+
+---
+
+## 🐳 Docker Compose (opcional)
+
+Puedes crear un archivo `docker-compose.yml` si deseas ejecutar todos los servicios con un solo comando.
+
+---
+
+## 💬 Flujo del Chat
+
+1. El usuario inicia sesión y obtiene un token JWT.
+2. El frontend se conecta al backend con Socket.IO.
+3. Al enviar un mensaje:
+
+   * El backend lo reenvía al servicio de moderación.
+   * Si se acepta, se difunde a todos los usuarios conectados.
+   * Si se rechaza, se informa la razón al emisor.
+
+---
+
+## 📁 Estructura del Proyecto
+
+```
+Proyecto-ACA/
+├── Backend/
+│   ├── ChatServer/              → Socket.IO + JWT + persistencia
+│   └── MicroserviceModeration/ → FastAPI + Detoxify
+├── Frontend/                   → React + Vite + JWT
+├── README.md                   → Documentación global
+└── CHAT_AUDIT.md               → Registro de cambios e integraciones
+```
+
+---
+
+## 📆 Notas Finales
+
+* El umbral de toxicidad se puede personalizar en `main.py`
+* Arquitectura preparada para escalar o cambiar de modelo de moderación
+* Se recomienda uso de HTTPS y protección JWT en producción
+
+---
