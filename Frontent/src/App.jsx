@@ -18,6 +18,7 @@ import { validateSession } from "./services/auth.service";
 import { useAuthStore } from "./store/auth.store";
 import CreatePost from "./pages/CreatePost/CreatePost";
 import UpdatePost from "./pages/UpdatePost/UpdatePost";
+import ChatPage from "./pages/Chat/Chat";
 
 function App() {
   const token = useAuthStore((state) => state.token);
@@ -58,6 +59,7 @@ function App() {
               <Route path="/post/:id" element={<Details />} />
               <Route path="/edit/:id" element={<UpdatePost />} />
               <Route path="/create" element={<CreatePost />} />
+              <Route path="/chat" element={<ChatPage />} />
               <Route path="*" element={<Navigate to="/" />} />
             </Route>
           </Route>
