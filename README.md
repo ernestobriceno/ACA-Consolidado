@@ -1,11 +1,11 @@
-# ElephanTalk - Real Time Chat Integration
+# 🐘 ElephanTalk - Real Time Chat Integration
 
-Este repositorio contiene una implementación consolidada de un chat grupal en tiempo real, que integra:
+Este repositorio contiene una implementación completa y consolidada de un chat grupal en tiempo real, que integra:
 
-* ✅ **Frontend** en React con Vite
-* ✅ **Backend** con Socket.IO, JWT y persistencia de mensajes
-* ✅ **Servicio de moderación** con FastAPI usando el modelo Detoxify
-* ✅ Documentación unificada y pruebas para cada componente
+👉 **Frontend** en React con Vite
+👉 **Backend** con Socket.IO, JWT y persistencia de mensajes
+👉 **Servicio de Moderación** con FastAPI usando el modelo Detoxify
+👉 Documentación unificada y pruebas para cada componente
 
 ---
 
@@ -13,12 +13,12 @@ Este repositorio contiene una implementación consolidada de un chat grupal en t
 
 * **Node.js** v20 o superior
 * **Python** 3.10 o superior
-* **Docker** (opcional para moderación)
+* **Docker** (opcional para la moderación)
 * **torch** para el servicio de moderación con Detoxify
 
 ---
 
-## 🚀 Setup
+## ✨ Configuración
 
 ### 1. Servicio de Moderación (FastAPI + Detoxify)
 
@@ -28,10 +28,10 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
-📌 Este servicio analiza el contenido con el modelo Detoxify para detectar mensajes tóxicos.
-📌 Corre por defecto en `http://localhost:8000`.
+📌 El servicio usa el modelo Detoxify Multilingual y se conecta por defecto en `http://localhost:8000`.
+📌 La primera ejecución descargará los pesos del modelo; se necesita conexión a internet.
 
-#### Alternativa con Docker
+#### Alternativa con Docker:
 
 ```bash
 docker build -t moderation-service .
@@ -46,12 +46,12 @@ docker run -p 8000:8000 moderation-service
 cd Backend/ChatServer
 npm install
 cp .env.example .env
-# Edita .env con tu JWT_SECRET y MODERATION_URL si es necesario
+# Configura JWT_SECRET y MODERATION_URL si es necesario
 npm start
 ```
 
 📌 El servidor escucha en el puerto especificado en `.env` (por defecto `4000`).
-📌 Los mensajes se guardan en `messages.json`.
+📌 Los mensajes se guardan localmente en `messages.json`.
 
 ---
 
@@ -61,7 +61,7 @@ npm start
 cd Frontend
 npm install
 cp .env.example .env
-# Asegúrate de definir VITE_CHAT_URL con la URL del chat server
+# Define VITE_CHAT_URL con la URL del servidor de chat (ej. http://localhost:4000)
 npm run dev
 ```
 
@@ -72,7 +72,7 @@ npm run dev
 
 ## ✅ Pruebas
 
-### Backend (Chat Server)
+### Backend (Servidor de Chat)
 
 ```bash
 cd Backend/ChatServer
@@ -96,23 +96,23 @@ pip install fastapi pydantic uvicorn httpx torch
 
 ## 🐳 Docker Compose (opcional)
 
-Este repositorio incluye `Dockerfile` para los servicios principales, pero no incluye un archivo `docker-compose.yml`. Puedes crear uno con base en los `Dockerfile` existentes si deseas orquestar el despliegue con un solo comando.
+Este repositorio incluye `Dockerfile` para cada servicio principal. Puedes crear un `docker-compose.yml` si deseas orquestar todo el entorno con un solo comando.
 
 ---
 
 ## 💬 Flujo del Chat
 
 1. El usuario inicia sesión en la aplicación y obtiene un token JWT.
-2. El frontend se conecta al servidor de chat mediante Socket.IO.
+2. El frontend se conecta vía Socket.IO al servidor de chat.
 3. Al enviar un mensaje:
 
    * El backend lo reenvía al servicio de moderación.
-   * Si es aceptado, se difunde a todos los clientes conectados.
+   * Si es aceptado, se difunde a todos los clientes.
    * Si es rechazado, se notifica al remitente con la razón.
 
 ---
 
-## 📚 Estructura del Proyecto
+## 📁 Estructura del Proyecto
 
 ```
 Proyecto-ACA/
@@ -128,10 +128,10 @@ Proyecto-ACA/
 
 ---
 
-## 📝 Notas Finales
+## 📅 Notas Finales
 
-* El servicio de moderación puede ampliarse con modelos más complejos en producción.
-* La comunicación se basa en WebSockets en tiempo real usando Socket.IO.
-* Se recomienda asegurar el despliegue con HTTPS y tokens JWT robustos.
+* Puedes personalizar los umbrales de toxicidad en `Backend/MicroserviceModeration/main.py`.
+* La arquitectura está diseñada para escalar y permite reemplazar Detoxify por otro modelo si es necesario.
+* Asegura el despliegue en producción con HTTPS, variables de entorno y tokens JWT fuertes.
 
 ---
