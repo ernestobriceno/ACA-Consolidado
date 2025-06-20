@@ -17,4 +17,3 @@ async def moderate(message: Message):
         'reason': 'toxic content' if toxic else None,
         'scores': scores,
     }
-
