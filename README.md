@@ -16,9 +16,9 @@ cd Backend/MicroserviceModeration
 pip install -r requirements.txt
 uvicorn main:app --reload
 ```
-This demo uses a simplified moderation rule set that blocks messages containing
-words like `stupid` or `idiot`. No additional environment variables are
-required. The service will be available on `http://localhost:8000`.
+The service loads the multilingual Detoxify model using PyTorch. The first run
+will download the weights so an internet connection is required and startup may
+take a while. The API will be available on `http://localhost:8000`.
 
 To run it with Docker instead:
 ```bash
@@ -52,7 +52,7 @@ Execute the automated tests for each backend service:
 cd Backend/ChatServer && npm test
 cd ../MicroserviceModeration && pytest -q
 ```
-These tests run using the simplified rule set so heavy dependencies such as `torch` are not required. Installing `torch` is only needed when running the original Detoxify model.
+Running the moderation tests requires the Detoxify model and its dependencies (e.g. `torch`). The first execution may be slow while the weights download.
 
 ## Using Docker Compose
 The repository includes individual Dockerfiles but no compose file. You can build and run the moderation and API images separately using the commands shown above or adapt them to your own `docker-compose.yml`.

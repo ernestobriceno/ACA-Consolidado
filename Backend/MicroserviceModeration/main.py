@@ -1,19 +1,27 @@
 from fastapi import FastAPI
 from schemas.message import Message
+from DetoxifyMultilingual import DetoxifyMultilingual
 
-# Basic list of words considered toxic for demonstration purposes.
-BANNED_WORDS = {"stupid", "idiot"}
+# load detoxify model once at startup
+model = DetoxifyMultilingual()
+
+THRESHOLD = 0.5
+TOXIC_FIELDS = [
+    'toxicity',
+    'severe_toxicity',
+    'obscene',
+    'identity_attack',
+    'insult',
+    'threat',
+]
 
 app = FastAPI()
 
-
-@app.post("/moderate")
+@app.post('/moderate')
 async def moderate(message: Message):
-    """Return whether the provided content is acceptable."""
-    text = message.content.lower()
-    toxic = any(word in text for word in BANNED_WORDS)
+    scores = model.predict(message.content)
+    toxic = any(scores.get(field, 0) >= THRESHOLD for field in TOXIC_FIELDS)
     return {
-        "accepted": not toxic,
-        "reason": "toxic content" if toxic else None,
+        'accepted': not toxic,
+        'reason': 'toxic content' if toxic else None,
     }
-
